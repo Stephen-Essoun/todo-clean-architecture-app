@@ -14,22 +14,24 @@ class TodoRemoteDBImpl implements TodoRemoteDB {
 
   @override
   Future<Todo> addTodo(Todo todo) async {
-    await db.doc(todo.id).set(todo);
+    await db.doc(todo.id).set(todo.toMap());
     return todo;
   }
 
   @override
   Future<Todo> editTodo(Todo todo) async {
-    await db.doc(todo.id).update(todo);
+    await db.doc(todo.id).update(todo.toMap());
+    return todo;
   }
  @override
   Future<Todo> deleteTodo(Todo todo) async {
     await db.doc(todo.id).delete();
+    return todo;
   }
   @override
   Future<List<Todo>> listTodos() async {
     final todos = await db.get();
-    return todos.docs.map((e) => ,).toList();
+    return todos.docs.map((todo) => Todo.fromMap(todo.data()),).toList();
   }
 
  
