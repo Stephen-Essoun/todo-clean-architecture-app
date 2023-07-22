@@ -7,12 +7,12 @@ import 'package:todo/feature/todo/shared/errors/failure.dart';
 
 import '../../shared/utils/usecases.dart';
 
-class AddTodo implements UseCase<Todo,Todo> {
+class AddTodo implements UseCase<Todo,Params<Todo>> {
   final TodoRepository repo;
 
   AddTodo(this.repo);
   @override
-  Future<Either<Failure, Todo>> call(Todo todo)async {
-    return await repo.add(todo);
+  Future<Either<Failure, Todo>> call(Params todo)async {
+    return await repo.add(todo.data);
   }
 }
