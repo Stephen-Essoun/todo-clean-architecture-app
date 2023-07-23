@@ -1,11 +1,21 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/feature/todo/presentation/views/home.dart';
 import 'package:todo/firebase_options.dart';
 
+import 'feature/todo/presentation/binding/todo.binding.dart';
+
+TodoBinding binding = TodoBinding();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    binding.todoReDB,
+    binding.todoRepo,
+    binding.addTodo,
+    binding.todoPro,
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,12 +24,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const ExtensionsTest());
+        home: const HomeView());
   }
 }
 

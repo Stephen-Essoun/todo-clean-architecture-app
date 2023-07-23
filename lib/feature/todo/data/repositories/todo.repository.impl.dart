@@ -1,12 +1,14 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import 'package:todo/feature/todo/data/database/remote.db.dart';
 import 'package:todo/feature/todo/domain/entities/todo.dart';
 import 'package:todo/feature/todo/domain/repositories/todo.repository.dart';
 import 'package:todo/feature/todo/shared/errors/failure.dart';
 
-class TodoRepositoryImpl implements TodoRepository{
+class TodoRepositoryImpl extends ChangeNotifier implements TodoRepository{
   final TodoRemoteDB remoteDB;
   TodoRepositoryImpl(this.remoteDB);
+  TodoRepositoryImpl.empty():remoteDB = TodoRemoteDBImpl();
 
   @override
   Future<Either<Failure, Todo>> add(Todo todo) async{

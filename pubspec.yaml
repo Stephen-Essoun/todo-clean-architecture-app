@@ -14,6 +14,7 @@ dependencies:
   firebase_core: any
   cloud_firestore: any
   dartz: any
+  provider: ^6.0.5
   
 
 dev_dependencies:
