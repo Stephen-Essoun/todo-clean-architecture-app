@@ -7,7 +7,7 @@ abstract class TodoRemoteDB extends ChangeNotifier {
   Future<Todo> addTodo(Todo todo);
   Future<Todo> editTodo(Todo todo);
   Future<Todo> deleteTodo(Todo todo);
-  Future<List<Todo>> listTodos();
+  Stream<List<Todo>> listTodos();
 }
 
 class TodoRemoteDBImpl extends ChangeNotifier implements TodoRemoteDB {
@@ -34,12 +34,15 @@ class TodoRemoteDBImpl extends ChangeNotifier implements TodoRemoteDB {
   }
 
   @override
-  Future<List<Todo>> listTodos() async {
-    final todos = await db.get();
-    return todos.docs
-        .map(
-          (todo) => Todo.fromMap(todo.data()),
-        )
-        .toList();
+  Stream<List<Todo>> listTodos() async* {
+    yield* db.snapshots().map(
+      (snapshots) {
+        return snapshots.docs
+            .map(
+              (docs) => Todo.fromMap(docs.data())
+            )
+            .toList();
+      },
+    );
   }
 }

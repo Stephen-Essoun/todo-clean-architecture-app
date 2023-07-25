@@ -41,9 +41,9 @@ class TodoRepositoryImpl extends ChangeNotifier implements TodoRepository{
   }
 
   @override
-  Future<Either<Failure, List<Todo>>> getAll() async{
+  Future<Either<Failure, Stream<List<Todo>>>> getAll() async{
     try {
-      final result = await remoteDB.listTodos();
+      final result = remoteDB.listTodos();
       return Right(result);
     } catch (e) {
       return Left(Failure("Oops, creating was unsuccessful"));

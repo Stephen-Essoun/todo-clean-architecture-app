@@ -14,6 +14,8 @@ void main() async {
     binding.todoReDB,
     binding.todoRepo,
     binding.addTodo,
+    binding.getAllTodo,
+    binding.deletTodo,
     binding.todoPro,
   ], child: const MyApp()));
 }
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const HomeView());
+        home: HomeView());
   }
 }
 
@@ -65,6 +67,8 @@ class _ExtensionsTestState extends State<ExtensionsTest> {
     );
   }
 }
+
+
 
 extension WhileWait on ElevatedButton {
   Widget loading(bool isLoading) {

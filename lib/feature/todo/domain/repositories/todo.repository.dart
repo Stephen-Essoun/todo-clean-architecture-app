@@ -8,5 +8,7 @@ abstract class TodoRepository extends ChangeNotifier{
   Future<Either<Failure,Todo>> add(Todo todo);
   Future<Either<Failure,Todo>> edit(Todo todo);
   Future<Either<Failure,Todo>> delete(Todo todo);
-  Future<Either<Failure,List<Todo>>> getAll();
+  Future<Either<Failure,Stream<List<Todo>>>> getAll();
+
+  
 }

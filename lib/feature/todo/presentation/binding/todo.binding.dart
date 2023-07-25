@@ -3,6 +3,8 @@ import 'package:todo/feature/todo/data/database/remote.db.dart';
 import 'package:todo/feature/todo/data/repositories/todo.repository.impl.dart';
 import 'package:todo/feature/todo/domain/repositories/todo.repository.dart';
 import 'package:todo/feature/todo/domain/usecases/add.dart';
+import 'package:todo/feature/todo/domain/usecases/delete.dart';
+import 'package:todo/feature/todo/domain/usecases/get.all.dart';
 import 'package:todo/feature/todo/presentation/providers/todo.provider.dart';
 
 class TodoBinding {
@@ -27,10 +29,16 @@ class TodoBinding {
     },
   );
 
+  final getAllTodo = ChangeNotifierProxyProvider<TodoRepository,GetAllTodo>(create: (_) => GetAllTodo.empty(),update: (context, value, previous) {
+    return GetAllTodo(value);
+  },);
+
+  final deletTodo = ChangeNotifierProxyProvider<TodoRepository,DeleteTodo> (create: (context) => DeleteTodo.empty(),update: (context, value, previous) => DeleteTodo(value),);
+
    final todoPro = ChangeNotifierProxyProvider<AddTodo, TodoProvider>(
     create: (_) => TodoProvider.empty(),//there is one positional argument expected here too
     update: (context, addTodo, todoPro) {
-      return TodoProvider(addTodo);
+      return TodoProvider(addTodo,context.read<GetAllTodo>(),context.read<DeleteTodo>());
     },
   );
 }
