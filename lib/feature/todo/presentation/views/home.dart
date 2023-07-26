@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/feature/todo/domain/entities/todo.dart';
 import 'package:todo/feature/todo/presentation/providers/todo.provider.dart';
@@ -21,9 +22,68 @@ class HomeView extends StatelessWidget {
               return ListView.builder(
                 itemCount: todo.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(todo[index].text),
-                    subtitle: Text(todo[index].description),
+                  return Slidable(
+                    endActionPane: ActionPane(
+                      motion: const StretchMotion(),
+                      children: [
+                        // SlidableAction(
+                        //   backgroundColor: Colors.green,
+                        //   onPressed: (context) {
+                        //     textController.text = todo[index].text;
+                        //     descriptionController.text =
+                        //         todo[index].description;
+                        //     editTextFields(context, todo[index].id);
+                        //   },
+                        //   icon: Icons.edit,
+                        // ),
+                        SlidableAction(
+                          backgroundColor: Colors.red,
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(5),
+                              bottomLeft: Radius.circular(5)),
+                          onPressed: (context) {
+                            context
+                                .read<TodoProvider>()
+                                .delete(todo[index], context);
+                          },
+                          icon: Icons.delete,
+                        ),
+                      ],
+                    ),
+                    startActionPane: ActionPane(
+                      motion: const StretchMotion(),
+                      children: [
+                        SlidableAction(
+                          backgroundColor: Colors.green,
+                          borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(5),
+                              bottomRight: Radius.circular(5)),
+                          onPressed: (context) {
+                            textController.text = todo[index].text;
+                            descriptionController.text =
+                                todo[index].description;
+                            editTextFields(context, todo[index].id);
+                          },
+                          icon: Icons.edit,
+                        ),
+                        // SlidableAction(
+                        // borderRadius: const BorderRadius.only(
+                        //     topRight: Radius.circular(5),
+                        //     bottomRight: Radius.circular(5)),
+                        //   backgroundColor: Colors.red,
+                        //   onPressed: (context) {
+                        //     context
+                        //         .read<TodoProvider>()
+                        //         .delete(todo[index], context);
+                        //   },
+                        //   icon: Icons.delete,
+                        // ),
+                      ],
+                    ),
+                    child: ListTile(
+                      title: Text(todo[index].text),
+                      subtitle: Text(todo[index].description),
+                    ),
                   );
                 },
               );
@@ -46,8 +106,7 @@ class HomeView extends StatelessWidget {
   final descriptionController = TextEditingController();
 
   String generateRandomId(int length) {
-    const String chars =
-        'abcdefghijklmnopqrstuvwxyz0123456789';
+    const String chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     final Random random = Random();
     const int maxIndex = chars.length - 1;
 
@@ -68,9 +127,14 @@ class HomeView extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            customTextField(labelText: 'Title', controller: textController),
             customTextField(
-                labelText: 'Description', controller: descriptionController),
+              labelText: 'Title',
+              controller: textController,
+            ),
+            customTextField(
+              labelText: 'Description',
+              controller: descriptionController,
+            ),
             ElevatedButton(
               onPressed: () {
                 final todo = Todo(
@@ -80,6 +144,43 @@ class HomeView extends StatelessWidget {
                 context.read<TodoProvider>().add(context, todo);
               },
               child: const Text('Add Todo'),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  editTextFields(
+    BuildContext context,
+    String id,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Column(
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            customTextField(
+              labelText: 'Title',
+              controller: textController,
+            ),
+            customTextField(
+              labelText: 'Description',
+              controller: descriptionController,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final todo = Todo(
+                  id: id,
+                  text: textController.text,
+                  description: descriptionController.text,
+                );
+                context.read<TodoProvider>().edit(todo, context);
+              },
+              child: const Text('Save Todo'),
             )
           ],
         );

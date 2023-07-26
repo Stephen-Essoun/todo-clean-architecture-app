@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo/feature/todo/domain/usecases/add.dart';
+import 'package:todo/feature/todo/domain/usecases/edit.dart';
 import 'package:todo/feature/todo/domain/usecases/get.all.dart';
 import 'package:todo/feature/todo/shared/utils/usecases.dart';
 
@@ -10,17 +11,17 @@ class TodoProvider extends ChangeNotifier {
   final AddTodo addTodo;
   final GetAllTodo getAllTodo;
   final DeleteTodo deleteTodo;
+  final EditTodo editTodo;
 
-  TodoProvider(this.addTodo, this.getAllTodo, this.deleteTodo);
+  TodoProvider(this.addTodo, this.getAllTodo, this.deleteTodo, this.editTodo);
   TodoProvider.empty()
       : addTodo = AddTodo.empty(),
         getAllTodo = GetAllTodo.empty(),
-        deleteTodo = DeleteTodo.empty();
+        deleteTodo = DeleteTodo.empty(),
+        editTodo = EditTodo.empty();
 
-
-  add(BuildContext context,Todo todo) async {
-    final result = await addTodo
-        .call(Params(todo));
+  Future<void> add(BuildContext context, Todo todo) async {
+    final result = await addTodo.call(Params(todo));
     result.fold(
       (l) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -29,7 +30,7 @@ class TodoProvider extends ChangeNotifier {
       },
       (success) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('success'),
+          content: Text('Todo added successfully'),
         ));
         Navigator.of(context).pop();
         return success;
@@ -37,8 +38,27 @@ class TodoProvider extends ChangeNotifier {
     );
   }
 
-  delete()async{
-final result = await deleteTodo.call(Params(Todo));
+  Future<void> delete(Todo todo, BuildContext context) async {
+    final result = await deleteTodo.call(Params(todo));
+    result.fold(
+      (failure) => print(failure.message),
+      (success) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Todo deleted successfully'),
+      )),
+    );
+  }
+
+  Future<void> edit(Todo todo, BuildContext context) async {
+    final result = await editTodo.call(Params(todo));
+    result.fold((failure) {
+      print(failure.message);
+    }, (success) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Todo editted successfully'),
+      ));      Navigator.of(context).pop();
+
+      return success;
+    });
   }
 
   Stream<List<Todo>> listTodo(BuildContext context) async* {
