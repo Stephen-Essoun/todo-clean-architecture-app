@@ -46,7 +46,7 @@ class TodoRepositoryImpl extends ChangeNotifier implements TodoRepository{
       final result = remoteDB.listTodos();
       return Right(result);
     } catch (e) {
-      return Left(Failure("Oops, creating was unsuccessful"));
+      return Left(Failure("Oops, could't get your todos"));
     }
   }
   
